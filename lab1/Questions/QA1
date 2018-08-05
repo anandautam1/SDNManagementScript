@@ -1,0 +1,34 @@
+1. Explain what is eclipse? And why we use it for programing on python? 
+Ecplipse in this case is the IDE an integrated development environment where it allows a developer to debug their code and to ensure that a certain project run with the proper dependencies.
+
+2. Explain three main characteristics of python that you test in the lab? 
+It is really easy to pick up and learn. In this lab the code is interpreted thus doesnt necessarily need compilation to binary. 
+Just run the program directly from the source code. High level nature of the language were covered where there were numerous type casting performed. 
+
+3. What is the difference between empty module and main module when creating a python script? 
+In an empty module project gives no real dependencies will be assumed to be a one of project structure with less complexity in mind and any serious code fragmentation.
+Main module project gives a if __name__ == '__main__':  method where it will be the main of the code. It will try to centralize the code structure on that method.
+
+4. Find error(s) in a program: Suppose somebody has written a simple one-line program for computing sin(1): x=1; print ’sin(%g)=%g’ % (x, sin(x)) Create this program and try to run it. 
+What is the problem? What is the correct code? The problem of the code is that fact taht print doesn't were a non-ASCII character.
+For print an ASCII encoding required to be printed on the console. The next problem is the fact that sin method were never declared thus the code wouldn't execute. 
+The sin function comes from the math library where it needs to be imported. From there the function can be called via math.sin(x) thus the rest of the code needed to be changed.
+
+5. Create a python program that combines at least 4 operators and one statement (if, while or for) 
+
+secret_number = 5;
+flag = True;
+
+while flag:
+    sequence = [1,2,3,4,5,6];
+    for x in range(0,len(sequence)):
+        print("Guess the number inside the prorgam");
+        #raw_input is for string 
+        #input is for number 
+        var = sequence[x]
+        print("You entered " + str(var));
+        if var == secret_number:
+            flag = False;                                                                                                                                        
+                            
+
+ 
