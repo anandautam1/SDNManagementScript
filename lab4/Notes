@@ -1,0 +1,271 @@
+Notes 
+
+iperf four configuration are: 
+
+note to self for UDP server you gotta user UDP server 
+due to the limited payload on UDP there will be no guarantee in transmission thus there are less theoretical bandwith with an advantage of improved latency
+
+UDP is iperf -s -u to run UDP serve r
+and client is iperf 127.0.0.1 -u then it will execute the package transmission. 
+
+the statistics provide at the end of the transmission are the data transfer and the total datagrams 
+
+Exercises 
+
+Step 1 there are four configuration that iPerf can run;
+
+1. Client TCP 
+2. Client UDP
+3. Server daemon mode 
+4. Server UDP single threaed
+
+iperf --help
+Usage: iperf [-s|-c host] [options]
+       iperf [-h|--help] [-v|--version]
+
+Client/Server:
+  -f, --format    [kmKM]   format to report: Kbits, Mbits, KBytes, MBytes
+  -i, --interval  #        seconds between periodic bandwidth reports
+  -l, --len       #[KM]    length of buffer to read or write (default 8 KB)
+  -m, --print_mss          print TCP maximum segment size (MTU - TCP/IP header)
+  -o, --output    <filename> output the report or error message to this specified file
+  -p, --port      #        server port to listen on/connect to
+  -u, --udp                use UDP rather than TCP
+  -w, --window    #[KM]    TCP window size (socket buffer size)
+  -B, --bind      <host>   bind to <host>, an interface or multicast address
+  -C, --compatibility      for use with older versions does not sent extra msgs
+  -M, --mss       #        set TCP maximum segment size (MTU - 40 bytes)
+  -N, --nodelay            set TCP no delay, disabling Nagle's Algorithm
+  -V, --IPv6Version        Set the domain to IPv6
+
+Server specific:
+  -s, --server             run in server mode
+  -U, --single_udp         run in single threaded UDP mode
+  -D, --daemon             run the server as a daemon
+
+Client specific:
+  -b, --bandwidth #[KM]    for UDP, bandwidth to send at in bits/sec
+                           (default 1 Mbit/sec, implies -u)
+  -c, --client    <host>   run in client mode, connecting to <host>
+  -d, --dualtest           Do a bidirectional test simultaneously
+  -n, --num       #[KM]    number of bytes to transmit (instead of -t)
+  -r, --tradeoff           Do a bidirectional test individually
+  -t, --time      #        time in seconds to transmit for (default 10 secs)
+  -F, --fileinput <name>   input the data to be transmitted from a file
+  -I, --stdin              input the data to be transmitted from stdin
+  -L, --listenport #       port to receive bidirectional tests back on
+  -P, --parallel  #        number of parallel client threads to run
+  -T, --ttl       #        time-to-live, for multicast (default 1)
+  -Z, --linux-congestion <algo>  set TCP congestion control algorithm (Linux only)
+
+Miscellaneous:
+  -x, --reportexclude [CDMSV]   exclude C(connection) D(data) M(multicast) S(settings) V(server) reports
+  -y, --reportstyle C      report as a Comma-Separated Values
+  -h, --help               print this message and quit
+  -v, --version            print version information and quit
+
+[KM] Indicates options that support a K or M suffix for kilo- or mega-
+
+The TCP window size option can be set by the environment variable
+TCP_WINDOW_SIZE. Most other options can be set by an environment variable
+IPERF_<long option name>, such as IPERF_BANDWIDTH.
+
+In this aspect the server and client run side by side which can be shown below:
+
+iperf -s
+------------------------------------------------------------
+Server listening on TCP port 5001
+TCP window size: 85.3 KByte (default)
+------------------------------------------------------------
+[  4] local 127.0.0.1 port 5001 connected with 127.0.0.1 port 36180
+^[[D[ ID] Interval       Transfer     Bandwidth
+[  4]  0.0-10.0 sec  60.0 GBytes  51.5 Gbits/sec
+
+
+iperf -c 127.0.0.1
+------------------------------------------------------------
+Client connecting to 127.0.0.1, TCP port 5001
+TCP window size: 2.50 MByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 36180 connected with 127.0.0.1 port 5001
+[ ID] Interval       Transfer     Bandwidth
+[  3]  0.0-10.0 sec  60.0 GBytes  51.5 Gbits/sec
+
+
+# step 4 
+the command is:
+iperf -c 127.0.0.1 -l 1200 -t 20 -b 3m -p 9900
+
+
+# below is the communication between one computer
+-iperf -c 127.0.0.1 -l 1200 -t 20 -b 3m -p 9900
+WARNING: option -b implies udp testing
+------------------------------------------------------------
+Client connecting to 127.0.0.1, UDP port 9900
+Sending 1200 byte datagrams
+UDP buffer size:  208 KByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 35355 connected with 127.0.0.1 port 9900
+[ ID] Interval       Transfer     Bandwidth
+[  3]  0.0-20.0 sec  7.15 MBytes  3.00 Mbits/sec
+[  3] Sent 6251 datagrams
+[  3] Server Report:
+[  3]  0.0-20.0 sec  7.15 MBytes  3.00 Mbits/sec   0.011 ms    0/ 6251 (0%)
+
+
+Server listening on UDP port 9900
+Receiving 1470 byte datagrams
+UDP buffer size:  208 KByte (default)
+------------------------------------------------------------
+[  3] local 127.0.0.1 port 9900 connected with 127.0.0.1 port 35355
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  3]  0.0-20.0 sec  7.15 MBytes  3.00 Mbits/sec   0.012 ms    0/ 6251 (0%)
+
+step 5
+
+Section 4.2: Using minitnet 
+The linux terminal there are 4 terminals being presented
+
+eno1      Link encap:Ethernet  HWaddr 18:60:24:ef:57:8c  
+          inet addr:10.0.1.130  Bcast:10.0.1.255  Mask:255.255.255.0
+          inet6 addr: fe80::9e3a:8be2:254c:7bee/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:65536 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:33630 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:63969357 (63.9 MB)  TX bytes:11490285 (11.4 MB)
+          Interrupt:16 Memory:f0400000-f0420000 
+
+lo        Link encap:Local Loopback  
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:65536  Metric:1
+          RX packets:8793734 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:8793734 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:245627686798 (245.6 GB)  TX bytes:245627686798 (245.6 GB)
+
+vmnet1    Link encap:Ethernet  HWaddr 00:50:56:c0:00:01  
+          inet addr:192.168.188.1  Bcast:192.168.188.255  Mask:255.255.255.0
+          inet6 addr: fe80::250:56ff:fec0:1/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:119 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+vmnet8    Link encap:Ethernet  HWaddr 00:50:56:c0:00:08  
+          inet addr:192.168.46.1  Bcast:192.168.46.255  Mask:255.255.255.0
+          inet6 addr: fe80::250:56ff:fec0:8/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:119 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+# after mininet is being executed there will be extra interfaces running on top of the management.
+
+eno1      Link encap:Ethernet  HWaddr 18:60:24:ef:57:8c  
+          inet addr:10.0.1.130  Bcast:10.0.1.255  Mask:255.255.255.0
+          inet6 addr: fe80::9e3a:8be2:254c:7bee/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:65587 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:33648 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:63974766 (63.9 MB)  TX bytes:11491919 (11.4 MB)
+          Interrupt:16 Memory:f0400000-f0420000 
+
+lo        Link encap:Local Loopback  
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:65536  Metric:1
+          RX packets:8793754 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:8793754 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:245627688761 (245.6 GB)  TX bytes:245627688761 (245.6 GB)
+
+s1-eth1   Link encap:Ethernet  HWaddr 6a:c8:99:cd:6a:9d  
+          inet6 addr: fe80::68c8:99ff:fecd:6a9d/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:9 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:31 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:726 (726.0 B)  TX bytes:4022 (4.0 KB)
+
+s1-eth2   Link encap:Ethernet  HWaddr 76:77:d7:dc:0a:9d  
+          inet6 addr: fe80::7477:d7ff:fedc:a9d/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:9 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:31 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:726 (726.0 B)  TX bytes:4022 (4.0 KB)
+
+vmnet1    Link encap:Ethernet  HWaddr 00:50:56:c0:00:01  
+          inet addr:192.168.188.1  Bcast:192.168.188.255  Mask:255.255.255.0
+          inet6 addr: fe80::250:56ff:fec0:1/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:119 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+vmnet8    Link encap:Ethernet  HWaddr 00:50:56:c0:00:08  
+          inet addr:192.168.46.1  Bcast:192.168.46.255  Mask:255.255.255.0
+          inet6 addr: fe80::250:56ff:fec0:8/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:119 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+
+sudo kill 3981 # process that was running 
+
+Step 4:
+
+# one 
+mininet>help 
+
+Documented commands (type help <topic>):
+========================================
+EOF    gterm  iperfudp  nodes        pingpair      py      switch
+dpctl  help   link      noecho       pingpairfull  quit    time  
+dump   intfs  links     pingall      ports         sh      x     
+exit   iperf  net       pingallfull  px            source  xterm 
+
+You may also send a command to a node using:
+  <node> command {args}
+For example:
+  mininet> h1 ifconfig
+
+The interpreter automatically substitutes IP addresses
+for node names when a node is the first arg, so commands
+like
+  mininet> h2 ping h3
+should work.
+
+Some character-oriented interactive commands require
+noecho:
+  mininet> noecho h2 vi foo.py
+However, starting up an xterm/gterm is generally better:
+  mininet> xterm h2
+
+where it listed out all the available commands one the mininet 
+
+#two 
+mininet> nodes
+
+available nodes are: 
+h1 h2 s1
+
+list out all the available nodes within the virtual environment by default it has h1,h2 and s1.
+
+#three 
+mininet> dump
+<Host h1: h1-eth0:10.0.0.1 pid=8774> 
+<Host h2: h2-eth0:10.0.0.2 pid=8776> 
+<OVSBridge s1: lo:127.0.0.1,s1-eth1:None,s1-eth2:None pid=8781> 
+
+#four
+mininet> h1 ifconfig –a
+
