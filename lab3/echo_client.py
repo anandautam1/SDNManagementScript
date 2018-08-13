@@ -2,8 +2,8 @@
 
 import socket
 
-TCP_IP = '127.0.0.1'
-TCP_PORT = 62
+TCP_IP = '10.0.1.130'
+TCP_PORT = 23 # for telnet 
 BUFFER_SIZE = 20 # Normally 1024, but we want fast response
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
